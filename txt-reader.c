@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 
-/* Read 1 KB at a time */
-#define BUFFER_SIZE 1024
+/* 8 KB buffer */
+#define BUFFER_SIZE 8192
 
 int main(int argc, char *argv[])
 {
