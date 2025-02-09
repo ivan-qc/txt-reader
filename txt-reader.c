@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <string.h>
 
+/* Read 1 KB at a time */
+#define BUFFER_SIZE 1024
+
 int main(int argc, char *argv[])
 {
     /* Check command line arguments */
@@ -25,18 +28,35 @@ int main(int argc, char *argv[])
     /* Check if the file can be opened */
     if (file == NULL)
     {
-        printf("Could not open file.\n");
+        perror("Could not open file.");
         return 1;
     }
 
-    /* Read the file and print each byte as a character */
-    uint8_t buffer;
+    /* Buffer to hold chunks of data read from the file */
+    uint8_t buffer[BUFFER_SIZE];
+    /* Number of bytes read in the current fread operation */
+    size_t bytesRead = 0;
 
-    while (fread(&buffer, 1, 1, file) == 1)
-        printf("%c", buffer);
+    /* Read the file in chunks using the buffer and write each chunk to stdout */
+    while ((bytesRead = fread(buffer, 1, BUFFER_SIZE, file)) > 0)
+    {
+        /* Write the current chunk to stdout */
+        if (fwrite(buffer, 1, bytesRead, stdout) != bytesRead)
+        {
+            perror("Error writing to stdout");
+            fclose(file);
+            return 1;
+        }
+    }
 
-    /* Close the file */
+    /* Check for errors during the read operation */
+    if (ferror(file))
+    {
+        perror("Error reading file");
+        fclose(file);
+        return 1;
+    }
+    
     fclose(file);
-
     return 0;
 }
