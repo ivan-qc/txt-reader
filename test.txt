@@ -1,6 +1,0 @@
-Hello world,
-
-I'm just a test file for the txt-reader program, hope you like it!
-
-Warmly,
-test.txt
